@@ -82,6 +82,7 @@ final class HashMap implements MutableMap
     /**
      * @param TKey $key
      * @param TValue $value
+     * @return TValue|null the previous item for the key or null if there was none
      * @throws UnsupportedHashMapKeyException
      */
     public function put(mixed $key, mixed $value): mixed
@@ -108,14 +109,15 @@ final class HashMap implements MutableMap
 
 
         if ($bucketIndex !== -1) {
+            $previousValue = $bucket[$bucketIndex];
             $bucket[$bucketIndex] = $entry;
-            return $value;
+            return $previousValue;
         }
 
         $bucket->push($entry);
 
         $this->size++;
-        return $value;
+        return null;
     }
 
     /**

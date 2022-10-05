@@ -197,4 +197,19 @@ final class HashMapTest extends TestCase
 
         self::assertSame(2, $hashMap->count());
     }
+
+
+
+    /** @test */
+    public function it_should_allow_removing_by_key(): void
+    {
+        /** @var HashMap<int, bool> $hashMap */
+        $hashMap = HashMap::new();
+
+        $hashMap->put(1, true);
+
+        $hashMap->remove(1);
+
+        self::fail('not implemented');
+    }
 }
