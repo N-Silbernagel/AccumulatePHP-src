@@ -102,41 +102,56 @@ jobs:
       - name: Run testsuite
         run: php vendor/bin/phpunit tests
 
-  tag:
-    if: startsWith(github.ref, 'refs/tags/')
-
+  copy:
     needs:
       - analyse
       - test
 
+    # Don't run on forks.
+    if: github.repository == 'N-Silbernagel/AccumulatePHP-src'
+
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        php_version: [ '8.0', '8.1' ]
-
     steps:
-      - uses: actions/checkout@v3
-
       - uses: actions/download-artifact@master
         with:
-          name: ${{ matrix.php_version }}
-          path: .
+          name: 8.0
+          path: build-artifact
 
-      - name: "remove github files"
-        run: |
-          rm -rf .github
+      - name: "Checkout remote repository"
+        uses: "actions/checkout@v3"
+        with:
+          repository: N-Silbernagel/AccumulatePHP
+          path: remote-repository
+          token: ${{ secrets.ACCESS_TOKEN }}
 
-      - name: "setup git"
+      - run: cp -a build-artifact/. remote-repository
+
+      - name: "Setup Git"
+        working-directory: remote-repository
         run: |
           git config user.email "6422477+N-Silbernagel@users.noreply.github.com"
           git config user.name "N-Silbernagel"
+          echo "${GITHUB_REF}"
 
-      - name: "Tag downgraded files"
+      - name: "Get Git log"
+        id: git-log
+        run: echo ::set-output name=log::$(git log ${{ github.event.before }}..${{ github.event.after }} --reverse --pretty='%H %s' | sed -e 's/^/https:\/\/github.com\/N-Silbernagel\/AccumulatePHP\/commit\//')
+
+      - name: "Commit to remote - master"
+        working-directory: remote-repository
+        if: "github.ref = master"
         run: |
-          git add .
-          git commit -m "Release downgraded"
-          VERSION_PART=$(echo ${{ matrix.php_version }} | sed -e 's/\.//g')
-          git tag ${GITHUB_REF#refs/tags/}.$VERSION_PART
-          git push --tags
+          git add --all
+          git commit -m "Updated AccumulatePHP to commit ${{ github.event.after }}" -m "${{ steps.git-log.outputs.log }}"
+          git push --quiet origin main
+
+      - name: "Commit to remote - tag"
+        working-directory: remote-repository
+        if: "startsWith(github.ref, 'refs/tags/')"
+        run: |
+          git add --all
+          git commit -m "AccumulatePHP ${GITHUB_REF#refs/tags/}" -m "${{ steps.git-log.outputs.log }}"
+          git push --quiet origin main
+          git tag ${GITHUB_REF#refs/tags/} -m "${GITHUB_REF#refs/tags/}"
+          git push --quiet origin ${GITHUB_REF#refs/tags/}
