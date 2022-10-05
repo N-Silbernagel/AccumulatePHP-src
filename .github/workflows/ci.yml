@@ -115,7 +115,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@master
         with:
-          name: 8.0
+          name: "8.0"
           path: build-artifact
 
       - name: "Checkout remote repository"
