@@ -140,7 +140,6 @@ jobs:
 
       - name: "Commit to remote - master"
         working-directory: remote-repository
-        if: ${{ github.ref == 'refs/heads/master' }}
         run: |
           git add --all
           git commit -m "Updated AccumulatePHP to commit ${{ github.event.after }}" -m "${{ steps.git-log.outputs.log }}"
