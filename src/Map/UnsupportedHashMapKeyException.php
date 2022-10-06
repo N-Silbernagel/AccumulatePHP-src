@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace AccumulatePHP\Map;
 
-use Exception;
+use RuntimeException;
 
-final class UnsupportedHashMapKeyException extends Exception
+final class UnsupportedHashMapKeyException extends RuntimeException
 {
     public function __construct()
     {

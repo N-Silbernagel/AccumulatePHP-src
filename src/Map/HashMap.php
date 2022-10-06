@@ -36,9 +36,6 @@ final class HashMap implements MutableMap
         return new self();
     }
 
-    /**
-     * @throws UnsupportedHashMapKeyException
-     */
     public function get(mixed $key): mixed
     {
         $hash = $this->evaluateHash($key);
@@ -83,7 +80,6 @@ final class HashMap implements MutableMap
      * @param TKey $key
      * @param TValue $value
      * @return TValue|null the previous item for the key or null if there was none
-     * @throws UnsupportedHashMapKeyException
      */
     public function put(mixed $key, mixed $value): mixed
     {
@@ -92,7 +88,6 @@ final class HashMap implements MutableMap
         if (!array_key_exists($hash, $this->repository)) {
             $this->repository[$hash] = new SplDoublyLinkedList();
         }
-
 
         $bucket = $this->repository[$hash];
 
@@ -103,10 +98,8 @@ final class HashMap implements MutableMap
             }
         }
 
-
         /** @var Entry<TKey, TValue> $entry */
         $entry = Entry::of($key, $value);
-
 
         if ($bucketIndex !== -1) {
             $previousValue = $bucket[$bucketIndex];
@@ -118,6 +111,34 @@ final class HashMap implements MutableMap
 
         $this->size++;
         return null;
+    }
+
+    public function remove(mixed $key): mixed
+    {
+        $hash = $this->evaluateHash($key);
+
+        // TODO refactor duplicate code after tests are present
+        if (!array_key_exists($hash, $this->repository)) {
+            return null;
+        }
+
+        /** @var SplDoublyLinkedList $bucket */
+        $bucket = $this->repository[$hash];
+
+        $bucketIndex = -1;
+        foreach ($bucket as $index => $item) {
+            if ($this->keyEquals($item->getKey(), $key)) {
+                $bucketIndex = $index;
+            }
+        }
+
+        if ($bucketIndex === -1) {
+            return null;
+        }
+
+        $previousValue = $bucket[$bucketIndex];
+        unset($bucket[$bucketIndex]);
+        return $previousValue;
     }
 
     /**
