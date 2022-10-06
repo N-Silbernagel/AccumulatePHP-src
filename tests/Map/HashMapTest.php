@@ -210,6 +210,6 @@ final class HashMapTest extends TestCase
 
         $hashMap->remove(1);
 
-        self::fail('not implemented');
+        self::assertTrue($hashMap->isEmpty());
     }
 }

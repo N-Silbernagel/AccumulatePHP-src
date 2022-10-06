@@ -138,6 +138,11 @@ final class HashMap implements MutableMap
 
         $previousValue = $bucket[$bucketIndex];
         unset($bucket[$bucketIndex]);
+
+        if (count($bucket) === 0) {
+            unset($this->repository[$hash]);
+        }
+
         return $previousValue;
     }
 
