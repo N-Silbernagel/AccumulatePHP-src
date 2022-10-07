@@ -102,9 +102,10 @@ final class HashMap implements MutableMap
         $entry = Entry::of($key, $value);
 
         if ($bucketIndex !== -1) {
+            /** @var Entry<TKey, TValue> $previousValue */
             $previousValue = $bucket[$bucketIndex];
             $bucket[$bucketIndex] = $entry;
-            return $previousValue;
+            return $previousValue->getValue();
         }
 
         $bucket->push($entry);
@@ -122,7 +123,6 @@ final class HashMap implements MutableMap
             return null;
         }
 
-        /** @var SplDoublyLinkedList $bucket */
         $bucket = $this->repository[$hash];
 
         $bucketIndex = -1;
@@ -136,6 +136,7 @@ final class HashMap implements MutableMap
             return null;
         }
 
+        /** @var Entry<TKey, TValue> $previousValue */
         $previousValue = $bucket[$bucketIndex];
         unset($bucket[$bucketIndex]);
 
@@ -143,7 +144,7 @@ final class HashMap implements MutableMap
             unset($this->repository[$hash]);
         }
 
-        return $previousValue;
+        return $previousValue->getValue();
     }
 
     /**
