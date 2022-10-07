@@ -144,6 +144,7 @@ final class HashMap implements MutableMap
             unset($this->repository[$hash]);
         }
 
+        $this->size--;
         return $previousValue->getValue();
     }
 

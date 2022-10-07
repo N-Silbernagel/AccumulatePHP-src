@@ -7,25 +7,32 @@ namespace AccumulatePHP\Set;
 use AccumulatePHP\Accumulation;
 use AccumulatePHP\Map\HashMap;
 use AccumulatePHP\Map\UnsupportedHashMapKeyException;
+use IteratorAggregate;
+use Traversable;
 
 /**
- * @template TValue
- * @extends MutableSet<TValue>
+ * @template T
+ * @implements MutableSet<T>
+ * @implements IteratorAggregate<int, T>
  */
-final class HashSet implements MutableSet
+final class HashSet implements MutableSet, IteratorAggregate
 {
-    private int $key = 0;
-
-    public function __construct(
-        /** @param HashMap<TValue, true> */
+    /** @param HashMap<T, true> $hashMap */
+    private function __construct(
+        /** @var HashMap<T, true> */
         private readonly HashMap $hashMap
     )
     {
     }
 
-    public static function new(): Accumulation
+    /**
+     * @return self<T>
+     */
+    public static function new(): self
     {
-        return new self(HashMap::new());
+        /** @var HashMap<T, true> $hashMap */
+        $hashMap = HashMap::new();
+        return new self($hashMap);
     }
 
     public function isEmpty(): bool
@@ -46,5 +53,15 @@ final class HashSet implements MutableSet
         $putResult = $this->hashMap->put($element, true);
 
         return $putResult === null;
+    }
+
+    public function remove(mixed $element): bool
+    {
+        return $this->hashMap->remove($element) !== null;
+    }
+
+    public function getIterator(): Traversable
+    {
+        // TODO: Implement getIterator() method.
     }
 }
