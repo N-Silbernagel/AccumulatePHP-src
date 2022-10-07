@@ -124,7 +124,7 @@ jobs:
 
       - name: "Remove unwanted files from repository"
         working-directory: remote-repository
-        run: rm -rf .github .idea docker rector-downgrade.php phpstan docker-compose.yml
+        run: rm -rf .github .idea docker rector-downgrade.php docker-compose.yml
 
 
       - name: "Setup Git"
