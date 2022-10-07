@@ -109,7 +109,7 @@ jobs:
 
       - uses: actions/download-artifact@master
         with:
-          name: "8.0"
+          name: "build"
           path: build-artifact
 
       - name: "Checkout remote repository"
@@ -124,7 +124,7 @@ jobs:
 
       - name: "Remove unwanted files from repository"
         working-directory: remote-repository
-        run: rm -rf .github .idea docker rector-downgrade-8.0.php
+        run: rm -rf .github .idea docker rector-downgrade.php
 
 
       - name: "Setup Git"
