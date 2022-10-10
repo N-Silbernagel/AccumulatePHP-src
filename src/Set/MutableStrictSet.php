@@ -16,6 +16,7 @@ use Traversable;
  */
 final class MutableStrictSet implements MutableSet, IteratorAggregate
 {
+    /** @var MutableSeries<T>  */
     private readonly MutableSeries $repository;
 
     /** @param MutableSeries<T> $repository */
