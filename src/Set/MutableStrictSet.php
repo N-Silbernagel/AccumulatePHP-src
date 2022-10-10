@@ -16,7 +16,7 @@ use Traversable;
  */
 final class MutableStrictSet implements MutableSet, IteratorAggregate
 {
-    private MutableSeries $repository;
+    private readonly MutableSeries $repository;
 
     /** @param MutableSeries<T> $repository */
     private function __construct(?MutableSeries $repository = null)
@@ -66,7 +66,7 @@ final class MutableStrictSet implements MutableSet, IteratorAggregate
      */
     public function contains(mixed $element): bool
     {
-        return in_array($element, $this->repository, true);
+        return $this->repository->contains($element);
     }
 
     /**
@@ -78,7 +78,7 @@ final class MutableStrictSet implements MutableSet, IteratorAggregate
             return false;
         }
 
-        $this->repository[] = $element;
+        $this->repository->add($element);
         return true;
     }
 
@@ -87,13 +87,19 @@ final class MutableStrictSet implements MutableSet, IteratorAggregate
      */
     public function remove(mixed $element): bool
     {
-        $elementIndex = array_search($element, $this->repository, true);
+        // TODO: refactor to using repository->find
+        $searchedIndex = -1;
+        foreach ($this->repository as $index => $item) {
+            if ($element === $item) {
+                $searchedIndex = $index;
+            }
+        }
 
-        if ($elementIndex === false) {
+        if ($searchedIndex === -1) {
             return false;
         }
 
-        unset($this->repository[$elementIndex]);
+        $this->repository->remove($searchedIndex);
         return true;
     }
 }

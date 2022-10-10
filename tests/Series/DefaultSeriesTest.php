@@ -150,19 +150,6 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     }
 
     /** @test */
-    public function it_should_keep_track_of_its_current_key(): void
-    {
-        /** @var DefaultSeries<int> $defaultSeries */
-        $defaultSeries = DefaultSeries::fromArray([0, 1, 2]);
-
-        self::assertSame(0, $defaultSeries->key());
-
-        $defaultSeries->next();
-
-        self::assertSame(1, $defaultSeries->key());
-    }
-
-    /** @test */
     public function it_should_know_if_it_contains_element(): void
     {
         /** @var Series<int> $series */
