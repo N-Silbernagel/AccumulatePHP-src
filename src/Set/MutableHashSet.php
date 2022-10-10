@@ -15,11 +15,11 @@ use Traversable;
  * @implements MutableSet<T>
  * @implements IteratorAggregate<int, T>
  */
-final class HashSet implements MutableSet, IteratorAggregate
+final class MutableHashSet implements MutableSet, IteratorAggregate
 {
     /** @param HashMap<T, true> $hashMap */
     private function __construct(
-        /** @var HashMap<T, true> */
+        /** @var HashMap<T, true> $hashMap */
         private readonly HashMap $hashMap
     )
     {
@@ -62,6 +62,8 @@ final class HashSet implements MutableSet, IteratorAggregate
 
     public function getIterator(): Traversable
     {
-        // TODO: Implement getIterator() method.
+        foreach ($this->hashMap as $item) {
+            yield $item->getKey();
+        }
     }
 }

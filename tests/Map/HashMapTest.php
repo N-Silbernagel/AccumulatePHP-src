@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Map;
 
+use AccumulatePHP\Map\Entry;
 use AccumulatePHP\Map\HashMap;
+use AccumulatePHP\Map\MutableMap;
 use AccumulatePHP\Map\UnsupportedHashMapKeyException;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
@@ -209,5 +211,32 @@ final class HashMapTest extends TestCase
         $hashMap->remove(1);
 
         self::assertTrue($hashMap->isEmpty());
+    }
+
+    /** @test */
+    public function it_should_be_traversable(): void
+    {
+        /** @var MutableMap<UnequalHashable, String> $map */
+        $map = HashMap::new();
+
+        $one = new UnequalHashable(1, 1);
+        $two = new UnequalHashable(1, 2);
+        $three = new UnequalHashable(2, 1);
+
+        $map->put($one, 'b');
+        $map->put($two, 'a');
+        $map->put($three, 'c');
+
+        $actual = [];
+        foreach ($map as $item) {
+            $actual[] = $item;
+        }
+
+        $entryOne = Entry::of($one, 'b');
+        $entryTwo = Entry::of($two, 'a');
+        $entryThree = Entry::of($three, 'c');
+
+        $expected = [$entryOne, $entryTwo, $entryThree];
+        self::assertEqualsCanonicalizing($expected, $actual);
     }
 }

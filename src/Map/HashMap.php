@@ -7,14 +7,17 @@ namespace AccumulatePHP\Map;
 use AccumulatePHP\Hashable;
 use AccumulatePHP\Series\MutableArraySeries;
 use AccumulatePHP\Series\Series;
+use IteratorAggregate;
 use SplDoublyLinkedList;
+use Traversable;
 
 /**
  * @template TKey
  * @template TValue
  * @implements MutableMap<TKey, TValue>
+ * @implements IteratorAggregate<int, Entry<TKey, TValue>>
  */
-final class HashMap implements MutableMap
+final class HashMap implements MutableMap, IteratorAggregate
 {
     private int $size;
     /**
@@ -175,5 +178,14 @@ final class HashMap implements MutableMap
         }
 
         return $one === $two;
+    }
+
+    public function getIterator(): Traversable
+    {
+        foreach ($this->repository as $bucket) {
+            foreach ($bucket as $item) {
+                yield $item;
+            }
+        }
     }
 }
