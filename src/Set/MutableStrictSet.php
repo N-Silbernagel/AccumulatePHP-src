@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace AccumulatePHP\Set;
 
+use AccumulatePHP\Series\MutableArraySeries;
+use AccumulatePHP\Series\MutableSeries;
 use IteratorAggregate;
 use Traversable;
 
@@ -14,11 +16,12 @@ use Traversable;
  */
 final class MutableStrictSet implements MutableSet, IteratorAggregate
 {
-    /** @param array<T> $repository */
-    private function __construct(
-        private array $repository = []
-    )
+    private MutableSeries $repository;
+
+    /** @param MutableSeries<T> $repository */
+    private function __construct(?MutableSeries $repository = null)
     {
+        $this->repository = $repository ?? MutableArraySeries::new();
     }
 
     /**
@@ -35,9 +38,10 @@ final class MutableStrictSet implements MutableSet, IteratorAggregate
      */
     public static function fromArray(array $data): self
     {
+        // TODO: array unique does not quite work how we want it here (strict comparison, implement own unique in Series)
         $unique = array_unique($data);
-        $values = array_values($unique);
-        return new self($values);
+        $series = MutableArraySeries::fromArray($unique);
+        return new self($series);
     }
 
     public function isEmpty(): bool
