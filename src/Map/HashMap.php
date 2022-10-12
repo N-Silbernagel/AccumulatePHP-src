@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace AccumulatePHP\Map;
 
 use AccumulatePHP\Hashable;
+use AccumulatePHP\MixedHash;
 use AccumulatePHP\Series\MutableArraySeries;
 use AccumulatePHP\Series\Series;
 use IteratorAggregate;
@@ -152,23 +153,12 @@ final class HashMap implements MutableMap, IteratorAggregate
     }
 
     /**
-     * @throws UnsupportedHashMapKeyException
+     * @throws NotHashableException
      */
     private function evaluateHash(mixed $key): string|int
     {
-        if ($key instanceof Hashable) {
-            return $key->hashcode();
-        }
-
-        if (is_object($key)) {
-            return spl_object_hash($key);
-        }
-
-        if (is_int($key) || is_string($key)) {
-            return $key;
-        }
-
-        throw new UnsupportedHashMapKeyException();
+        return MixedHash::for($key)
+            ->computeHash();
     }
 
     private function keyEquals(mixed $one, mixed $two): bool

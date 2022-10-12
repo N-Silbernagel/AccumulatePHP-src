@@ -2,11 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests;
-
-use AccumulatePHP\Series\DefaultSeries;
-use AccumulatePHP\Series\Series;
-use Tests\Series\DefaultSeriesTest;
+namespace Tests\Series;
 
 interface SeriesTestContract
 {

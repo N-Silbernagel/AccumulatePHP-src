@@ -7,7 +7,7 @@ namespace Tests\Map;
 use AccumulatePHP\Map\Entry;
 use AccumulatePHP\Map\HashMap;
 use AccumulatePHP\Map\MutableMap;
-use AccumulatePHP\Map\UnsupportedHashMapKeyException;
+use AccumulatePHP\Map\NotHashableException;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 
@@ -171,7 +171,7 @@ final class HashMapTest extends TestCase implements AccumulationTestContract
     /** @test */
     public function it_should_throw_when_given_a_resource_as_key(): void
     {
-        $resource = fopen(__DIR__ . '/teststream.txt', 'r');
+        $resource = fopen(dirname(__DIR__) . '/teststream.txt', 'r');
 
         if ($resource === false) {
             self::fail('Could not open teststream file');
@@ -180,7 +180,7 @@ final class HashMapTest extends TestCase implements AccumulationTestContract
         /** @var HashMap<resource, int> $hashMap */
         $hashMap = HashMap::new();
 
-        $this->expectException(UnsupportedHashMapKeyException::class);
+        $this->expectException(NotHashableException::class);
 
         $hashMap->put($resource, 1);
     }

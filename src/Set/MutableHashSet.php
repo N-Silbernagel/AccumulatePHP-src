@@ -6,7 +6,8 @@ namespace AccumulatePHP\Set;
 
 use AccumulatePHP\Accumulation;
 use AccumulatePHP\Map\HashMap;
-use AccumulatePHP\Map\UnsupportedHashMapKeyException;
+use AccumulatePHP\Map\NotHashableException;
+use AccumulatePHP\MixedHash;
 use IteratorAggregate;
 use Traversable;
 
@@ -46,7 +47,7 @@ final class MutableHashSet implements MutableSet, IteratorAggregate
     }
 
     /**
-     * @throws UnsupportedHashMapKeyException
+     * @throws NotHashableException
      */
     public function add(mixed $element): bool
     {
@@ -65,5 +66,10 @@ final class MutableHashSet implements MutableSet, IteratorAggregate
         foreach ($this->hashMap as $item) {
             yield $item->getKey();
         }
+    }
+
+    public function contains(mixed $element): bool
+    {
+        return $this->hashMap->get($element) !== null;
     }
 }

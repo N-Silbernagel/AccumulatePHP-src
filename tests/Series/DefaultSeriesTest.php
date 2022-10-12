@@ -8,7 +8,6 @@ use AccumulatePHP\Series\DefaultSeries;
 use AccumulatePHP\Series\Series;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
-use Tests\SeriesTestContract;
 
 final class DefaultSeriesTest extends TestCase implements AccumulationTestContract, SeriesTestContract
 {

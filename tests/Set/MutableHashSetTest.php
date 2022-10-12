@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 use Tests\Map\UnequalHashable;
 
-final class MutableHashSetTest extends TestCase implements AccumulationTestContract
+final class MutableHashSetTest extends TestCase implements AccumulationTestContract, SetTestContract
 {
     /** @test */
     public function it_should_be_traversable(): void
@@ -42,5 +42,27 @@ final class MutableHashSetTest extends TestCase implements AccumulationTestContr
 
         self::assertTrue($mutableHashSet->isEmpty());
         self::assertInstanceOf(MutableHashSet::class, $mutableHashSet);
+    }
+
+    /** @test */
+    public function contains_should_return_true_if_set_contains_element(): void
+    {
+        /** @var MutableSet<int> $mutableHashSet */
+        $mutableHashSet = MutableHashSet::new();
+
+        $mutableHashSet->add(77);
+
+        self::assertTrue($mutableHashSet->contains(77));
+    }
+
+    /** @test */
+    public function contains_should_return_false_if_set_does_not_contain_element(): void
+    {
+        /** @var MutableSet<int> $mutableHashSet */
+        $mutableHashSet = MutableHashSet::new();
+
+        $mutableHashSet->add(66);
+
+        self::assertFalse($mutableHashSet->contains(54));
     }
 }

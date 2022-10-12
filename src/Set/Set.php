@@ -7,10 +7,13 @@ namespace AccumulatePHP\Set;
 use AccumulatePHP\Accumulation;
 
 /**
- * @template TValue
- * @extends Accumulation<int, TValue>
+ * @template T
+ * @extends Accumulation<int, T>
  */
 interface Set extends Accumulation
 {
-
+    /**
+     * @param T $element
+     */
+    public function contains(mixed $element): bool;
 }

@@ -10,7 +10,7 @@ use AccumulatePHP\Set\Set;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 
-final class MutableStrictSetTest extends TestCase implements AccumulationTestContract
+final class MutableStrictSetTest extends TestCase implements AccumulationTestContract, SetTestContract
 {
     /** @test */
     public function it_should_allow_creating_empty_instance_via_static_factory(): void
@@ -122,5 +122,27 @@ final class MutableStrictSetTest extends TestCase implements AccumulationTestCon
 
         self::assertTrue($remove);
         self::assertTrue($set->isEmpty());
+    }
+
+    /** @test */
+    public function contains_should_return_true_if_set_contains_element(): void
+    {
+        /** @var MutableSet<int> $mutableHashSet */
+        $mutableHashSet = MutableStrictSet::new();
+
+        $mutableHashSet->add(77);
+
+        self::assertTrue($mutableHashSet->contains(77));
+    }
+
+    /** @test */
+    public function contains_should_return_false_if_set_does_not_contain_element(): void
+    {
+        /** @var MutableSet<int> $mutableHashSet */
+        $mutableHashSet = MutableStrictSet::new();
+
+        $mutableHashSet->add(66);
+
+        self::assertFalse($mutableHashSet->contains(54));
     }
 }

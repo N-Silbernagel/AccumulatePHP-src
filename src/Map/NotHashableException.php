@@ -6,7 +6,7 @@ namespace AccumulatePHP\Map;
 
 use RuntimeException;
 
-final class UnsupportedHashMapKeyException extends RuntimeException
+final class NotHashableException extends RuntimeException
 {
     public function __construct()
     {
