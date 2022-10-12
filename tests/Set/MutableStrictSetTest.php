@@ -8,24 +8,18 @@ use AccumulatePHP\Set\MutableStrictSet;
 use AccumulatePHP\Set\MutableSet;
 use AccumulatePHP\Set\Set;
 use PHPUnit\Framework\TestCase;
+use Tests\AccumulationTestContract;
 
-final class MutableStrictSetTest extends TestCase
+final class MutableStrictSetTest extends TestCase implements AccumulationTestContract
 {
     /** @test */
-    public function it_should_be_creatable_through_static_factory(): void
+    public function it_should_allow_creating_empty_instance_via_static_factory(): void
     {
         $set = MutableStrictSet::new();
 
         self::assertInstanceOf(MutableStrictSet::class, $set);
         self::assertInstanceOf(Set::class, $set);
-    }
-
-    /** @test */
-    public function it_should_be_empty_after_instantiation(): void
-    {
-        $defaultSet = MutableStrictSet::new();
-
-        self::assertTrue($defaultSet->isEmpty());
+        self::assertTrue($set->isEmpty());
     }
 
     /** @test */

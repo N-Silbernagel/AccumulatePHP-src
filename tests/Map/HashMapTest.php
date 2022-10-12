@@ -11,7 +11,7 @@ use AccumulatePHP\Map\UnsupportedHashMapKeyException;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 
-final class HashMapTest extends TestCase
+final class HashMapTest extends TestCase implements AccumulationTestContract
 {
     /** @test */
     public function it_should_allow_creating_empty_instance_via_static_factory(): void
