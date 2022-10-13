@@ -12,10 +12,8 @@ use JetBrains\PhpStorm\Pure;
  */
 final class MixedHash
 {
-    /** @param T $element */
     private function __construct(
-        /** @var T $element */
-        private mixed $element
+        private readonly string|int $hash
     )
     {
     }
@@ -24,26 +22,30 @@ final class MixedHash
      * @param T $element
      * @return self<T>
      */
-    #[Pure]
     public static function for(mixed $element): self
     {
-        return new self($element);
+        return new self(self::computeHash($element));
     }
 
-    public function computeHash(): string|int
+    public static function computeHash(mixed $element): string|int
     {
-        if ($this->element instanceof Hashable) {
-            return $this->element->hashcode();
+        if ($element instanceof Hashable) {
+            return $element->hashcode();
         }
 
-        if (is_object($this->element)) {
-            return spl_object_hash($this->element);
+        if (is_object($element)) {
+            return spl_object_hash($element);
         }
 
-        if (is_int($this->element) || is_string($this->element)) {
-            return $this->element;
+        if (is_int($element) || is_string($element)) {
+            return $element;
         }
 
         throw new NotHashableException();
+    }
+
+    public function getHash(): int|string
+    {
+        return $this->hash;
     }
 }

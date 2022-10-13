@@ -16,7 +16,7 @@ final class MixedHashTest extends TestCase
     {
         $mixedHash = MixedHash::for(2294605);
 
-        self::assertSame(2294605, $mixedHash->computeHash());
+        self::assertSame(2294605, $mixedHash->getHash());
     }
 
     /** @test */
@@ -24,7 +24,39 @@ final class MixedHashTest extends TestCase
     {
         $mixedHash = MixedHash::for('test');
 
-        self::assertSame('test', $mixedHash->computeHash());
+        self::assertSame('test', $mixedHash->getHash());
+    }
+
+    /** @test */
+    public function it_should_throw_for_float(): void
+    {
+        $this->expectException(NotHashableException::class);
+
+        MixedHash::for(1.18);
+    }
+
+    /** @test */
+    public function it_should_throw_for_bool(): void
+    {
+        $this->expectException(NotHashableException::class);
+
+        MixedHash::for(false);
+    }
+
+    /** @test */
+    public function it_should_throw_for_null(): void
+    {
+        $this->expectException(NotHashableException::class);
+
+        MixedHash::for(null);
+    }
+
+    /** @test */
+    public function it_should_throw_for_array(): void
+    {
+        $this->expectException(NotHashableException::class);
+
+        MixedHash::for([]);
     }
 
     /** @test */
@@ -40,7 +72,7 @@ final class MixedHashTest extends TestCase
 
         $mixedHash = MixedHash::for($resource);
 
-        $mixedHash->computeHash();
+        $mixedHash->getHash();
     }
 
     /** @test */
@@ -49,7 +81,7 @@ final class MixedHashTest extends TestCase
         $obj = (object)[];
         $mixedHash = MixedHash::for($obj);
 
-        self::assertSame(spl_object_hash($obj), $mixedHash->computeHash());
+        self::assertSame(spl_object_hash($obj), $mixedHash->getHash());
 
     }
 
@@ -59,6 +91,6 @@ final class MixedHashTest extends TestCase
         $hashable = new EqualHashable('hello');
         $mixedHash = MixedHash::for($hashable);
 
-        self::assertSame($hashable->hashcode(), $mixedHash->computeHash());
+        self::assertSame($hashable->hashcode(), $mixedHash->getHash());
     }
 }

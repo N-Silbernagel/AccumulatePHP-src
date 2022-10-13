@@ -185,7 +185,7 @@ final class HashMap implements MutableMap, IteratorAggregate
     private function evaluateHash(mixed $key): string|int
     {
         return MixedHash::for($key)
-            ->computeHash();
+            ->getHash();
     }
 
     private function keyEquals(mixed $one, mixed $two): bool
