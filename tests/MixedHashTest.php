@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use AccumulatePHP\Map\NotHashableException;
 use AccumulatePHP\MixedHash;
 use PHPUnit\Framework\TestCase;
 use Tests\Map\EqualHashable;
@@ -25,54 +24,6 @@ final class MixedHashTest extends TestCase
         $mixedHash = MixedHash::for('test');
 
         self::assertSame('test', $mixedHash->getHash());
-    }
-
-    /** @test */
-    public function it_should_throw_for_float(): void
-    {
-        $this->expectException(NotHashableException::class);
-
-        MixedHash::for(1.18);
-    }
-
-    /** @test */
-    public function it_should_throw_for_bool(): void
-    {
-        $this->expectException(NotHashableException::class);
-
-        MixedHash::for(false);
-    }
-
-    /** @test */
-    public function it_should_throw_for_null(): void
-    {
-        $this->expectException(NotHashableException::class);
-
-        MixedHash::for(null);
-    }
-
-    /** @test */
-    public function it_should_throw_for_array(): void
-    {
-        $this->expectException(NotHashableException::class);
-
-        MixedHash::for([]);
-    }
-
-    /** @test */
-    public function it_should_throw_for_resource(): void
-    {
-        $resource = fopen(__DIR__ . '/teststream.txt', 'r');
-
-        if ($resource === false) {
-            self::fail('Could not open teststream file');
-        }
-
-        $this->expectException(NotHashableException::class);
-
-        $mixedHash = MixedHash::for($resource);
-
-        $mixedHash->getHash();
     }
 
     /** @test */
