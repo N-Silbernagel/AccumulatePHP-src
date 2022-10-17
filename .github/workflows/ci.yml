@@ -1,4 +1,4 @@
-name: Build, analyse and test
+name: Pipeline
 
 on:
   push:
@@ -122,9 +122,11 @@ jobs:
       - name: "Copy build files to remote repository"
         run: cp -a build-artifact/. remote-repository
 
-      - name: "Remove unwanted files from repository"
+      - name: "Remove or rename src repository files/folders"
         working-directory: remote-repository
-        run: rm -rf .github .idea docker rector-downgrade.php docker-compose.yml
+        run: |
+          rm -rf .github .idea docker rector-downgrade.php docker-compose.yml README.md
+          mv README-remote.md README.md
 
 
       - name: "Setup Git"
