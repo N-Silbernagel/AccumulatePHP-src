@@ -127,7 +127,7 @@ jobs:
 
       - name: "Remove src repository files/folders"
         working-directory: remote-repository
-        run: rm -rf .github .idea docker rector-downgrade.php docker-compose.yml README.md
+        run: rm -rf .github .idea docker rector-downgrade.php docker-compose.yml
 
 
       - name: "Setup Git"
