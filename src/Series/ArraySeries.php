@@ -11,10 +11,10 @@ use Traversable;
 
 /**
  * @template T
- * @implements MutableSeries<T>
+ * @implements Series<T>
  * @implements IteratorAggregate<int, T>
  */
-final class MutableArraySeries implements MutableSeries, IteratorAggregate
+final class ArraySeries implements Series, IteratorAggregate
 {
     /**
      * @param array<T> $repository the internal array used for keeping the values
@@ -46,10 +46,10 @@ final class MutableArraySeries implements MutableSeries, IteratorAggregate
     /**
      * @template GivenType
      * @param array<GivenType> $array
-     * @return MutableArraySeries<GivenType>
+     * @return ArraySeries<GivenType>
      */
     #[Pure]
-    public static function fromArray(array $array): MutableArraySeries
+    public static function fromArray(array $array): ArraySeries
     {
         if (!array_is_list($array)) {
             $array = array_values($array);
@@ -110,9 +110,9 @@ final class MutableArraySeries implements MutableSeries, IteratorAggregate
 
     /**
      * @param callable(T): bool $filterConsumer
-     * @return MutableArraySeries<T>
+     * @return ArraySeries<T>
      */
-    public function filter(callable $filterConsumer): MutableArraySeries
+    public function filter(callable $filterConsumer): ArraySeries
     {
         $filteredRepo = array_filter($this->repository, $filterConsumer);
         return self::fromArray($filteredRepo);

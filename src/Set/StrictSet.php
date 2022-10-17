@@ -4,27 +4,27 @@ declare(strict_types=1);
 
 namespace AccumulatePHP\Set;
 
-use AccumulatePHP\Series\MutableArraySeries;
-use AccumulatePHP\Series\MutableSeries;
+use AccumulatePHP\Series\ArraySeries;
+use AccumulatePHP\Series\Series;
 use IteratorAggregate;
 use JetBrains\PhpStorm\Pure;
 use Traversable;
 
 /**
  * @template T
- * @implements MutableSet<T>
+ * @implements Set<T>
  * @implements IteratorAggregate<int, T>
  */
-final class MutableStrictSet implements MutableSet, IteratorAggregate
+final class StrictSet implements Set, IteratorAggregate
 {
-    /** @var MutableSeries<T>  */
-    private readonly MutableSeries $repository;
+    /** @var Series<T>  */
+    private readonly Series $repository;
 
-    /** @param MutableSeries<T>|null $repository */
+    /** @param Series<T>|null $repository */
     #[Pure]
-    private function __construct(?MutableSeries $repository = null)
+    private function __construct(?Series $repository = null)
     {
-        $this->repository = $repository ?? MutableArraySeries::new();
+        $this->repository = $repository ?? ArraySeries::new();
     }
 
     /**
@@ -42,8 +42,8 @@ final class MutableStrictSet implements MutableSet, IteratorAggregate
      */
     public static function fromArray(array $array): self
     {
-        /** @var MutableSeries<T> $encounteredValues */
-        $encounteredValues = MutableArraySeries::new();
+        /** @var Series<T> $encounteredValues */
+        $encounteredValues = ArraySeries::new();
 
         foreach ($array as $item) {
             if (!$encounteredValues->contains($item)) {

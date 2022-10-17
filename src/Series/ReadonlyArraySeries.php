@@ -10,16 +10,16 @@ use Traversable;
 
 /**
  * @template T
- * @implements Series<T>
+ * @implements ReadonlySeries<T>
  * @implements IteratorAggregate<int, T>
  */
-final class DefaultSeries implements Series, IteratorAggregate
+final class ReadonlyArraySeries implements ReadonlySeries, IteratorAggregate
 {
     /**
      * @param Series<T> $repository
      */
     private function __construct(
-        private readonly Series $repository
+        private readonly ReadonlySeries $repository
     )
     {
     }
@@ -31,7 +31,7 @@ final class DefaultSeries implements Series, IteratorAggregate
     public static function new(): self
     {
         /** @var Series<T> $initSeries */
-        $initSeries = MutableArraySeries::new();
+        $initSeries = ArraySeries::new();
         return new self($initSeries);
     }
 
@@ -47,13 +47,12 @@ final class DefaultSeries implements Series, IteratorAggregate
 
     /**
      * @template SeriesT
-     * @param Series<SeriesT> $series
+     * @param ReadonlySeries<SeriesT> $series
      * @return self<SeriesT>
      */
-    #[Pure]
-    public static function fromSeries(Series $series): self
+    public static function fromSeries(ReadonlySeries $series): self
     {
-        return new self($series);
+        return self::fromArray($series->toArray());
     }
 
     /**
@@ -64,7 +63,7 @@ final class DefaultSeries implements Series, IteratorAggregate
     #[Pure]
     public static function fromArray(array $array): self
     {
-        return new self(MutableArraySeries::fromArray($array));
+        return new self(ArraySeries::fromArray($array));
     }
 
     public function count(): int
@@ -80,9 +79,9 @@ final class DefaultSeries implements Series, IteratorAggregate
     /**
      * @template ConsumerT
      * @param callable(T): ConsumerT $mapConsumer
-     * @return Series<ConsumerT>
+     * @return ReadonlySeries<ConsumerT>
      */
-    public function map(callable $mapConsumer): Series
+    public function map(callable $mapConsumer): ReadonlySeries
     {
         return $this->repository->map($mapConsumer);
     }
@@ -99,7 +98,7 @@ final class DefaultSeries implements Series, IteratorAggregate
 
     /**
      * @param callable(T): bool $filterConsumer
-     * @return DefaultSeries<T>
+     * @return ReadonlyArraySeries<T>
      */
     public function filter(callable $filterConsumer): self
     {
