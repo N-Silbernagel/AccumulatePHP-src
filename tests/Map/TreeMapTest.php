@@ -158,7 +158,7 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
     }
 
     /** @test */
-    public function it_should_allow_putting_entries_in()
+    public function it_should_allow_putting_entries_in(): void
     {
         /** @var Map<int, int> $treeMap */
         $treeMap = TreeMap::new();

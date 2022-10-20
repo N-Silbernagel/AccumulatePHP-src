@@ -19,6 +19,7 @@ final class TreeMapEntry
      * @param TreeMapEntry<TKey, TValue>|null $right
      */
     private function __construct(
+        /** @var Entry<TKey, TValue> $entry */
         private readonly Entry $entry,
         private readonly ?self $parent = null,
         private ?self          $left = null,
@@ -27,6 +28,14 @@ final class TreeMapEntry
     {
     }
 
+    /**
+     * @param TKey $key
+     * @param TValue $value
+     * @param TreeMapEntry<TKey, TValue>|null $left
+     * @param TreeMapEntry<TKey, TValue>|null $right
+     * @param TreeMapEntry<TKey, TValue>|null $parent
+     * @return self<TKey, TValue>
+     */
     #[Pure]
     public static function of(
         mixed $key,
@@ -36,6 +45,7 @@ final class TreeMapEntry
         ?self $parent = null
     ): self
     {
+        /** @var self<TKey, TValue> */
         return new self(
             Entry::of($key, $value),
             $parent,
@@ -99,11 +109,17 @@ final class TreeMapEntry
         $this->entry->setValue($value);
     }
 
+    /**
+     * @param TreeMapEntry<TKey, TValue> $entry
+     */
     public function setLeft(TreeMapEntry $entry): void
     {
         $this->left = $entry;
     }
 
+    /**
+     * @param TreeMapEntry<TKey, TValue> $entry
+     */
     public function setRight(TreeMapEntry $entry): void
     {
         $this->right = $entry;

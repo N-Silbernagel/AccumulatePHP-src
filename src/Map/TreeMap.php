@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace AccumulatePHP\Map;
 
-use AccumulatePHP\Accumulation;
 use AccumulatePHP\Series\ArraySeries;
 use AccumulatePHP\Series\Series;
 use IteratorAggregate;
@@ -19,6 +18,9 @@ use Traversable;
  */
 final class TreeMap implements Map, IteratorAggregate
 {
+    /**
+     * @var TreeMapEntry<TKey, TValue>|null
+     */
     private ?TreeMapEntry $root = null;
     private int $size = 0;
 
@@ -70,12 +72,16 @@ final class TreeMap implements Map, IteratorAggregate
     }
 
     /**
+     * @param TKey $key
+     * @param TValue $value
      * @return null|TValue
      */
     public function put(mixed $key, mixed $value): mixed
     {
         if (is_null($this->root)) {
-            $this->root = TreeMapEntry::of($key, $value);
+            /** @var TreeMapEntry<TKey, TValue> $newRoot */
+            $newRoot = TreeMapEntry::of($key, $value);
+            $this->root = $newRoot;
             $this->size++;
             return null;
         }
@@ -96,6 +102,7 @@ final class TreeMap implements Map, IteratorAggregate
             }
         } while ($current != null);
 
+        /** @var TreeMapEntry<TKey, TValue> $entry */
         $entry = TreeMapEntry::of($key, $value, parent: $parent);
 
         if ($comparisonResult === -1) {
@@ -187,8 +194,12 @@ final class TreeMap implements Map, IteratorAggregate
         return $this->size;
     }
 
+    /**
+     * @return Series<TValue>
+     */
     public function values(): Series
     {
+        /** @var Series<TValue> $series */
         $series = ArraySeries::new();
 
         foreach ($this as $entry) {
@@ -198,12 +209,19 @@ final class TreeMap implements Map, IteratorAggregate
         return $series;
     }
 
+    /**
+     * @template InputKey of string|int
+     * @template InputValue
+     * @param array<InputKey, InputValue> $assocArray
+     * @return self<InputKey, InputValue>
+     */
     public static function fromAssoc(array $assocArray): self
     {
-        $new = TreeMap::new();
+        /** @var self<InputKey, InputValue> $new */
+        $new = self::new();
 
-        foreach ($assocArray as $key => $item) {
-            $new->put($key, $item);
+        foreach ($assocArray as $key => $value) {
+            $new->put($key, $value);
         }
 
         return $new;
@@ -238,6 +256,10 @@ final class TreeMap implements Map, IteratorAggregate
         }
     }
 
+    /**
+     * @param TreeMapEntry<TKey, TValue> $root
+     * @return TreeMapEntry<TKey, TValue>
+     */
     #[Pure]
     private function getLeftMostNode(TreeMapEntry $root): TreeMapEntry
     {
@@ -251,6 +273,10 @@ final class TreeMap implements Map, IteratorAggregate
         return $previous;
     }
 
+    /**
+     * @param TreeMapEntry<TKey, TValue> $current
+     * @return TreeMapEntry<TKey, TValue>|null
+     */
     #[Pure]
     private function getNextBiggerNode(TreeMapEntry $current): ?TreeMapEntry
     {
