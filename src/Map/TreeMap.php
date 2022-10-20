@@ -207,12 +207,12 @@ final class TreeMap implements Map, IteratorAggregate
             return;
         }
 
-        $biggerNode = $this->getLeftMostNode($this->root);
+        $current = $this->getLeftMostNode($this->root);
 
-        while (!is_null($biggerNode)) {
-            yield $biggerNode;
+        while (!is_null($current)) {
+            yield $current;
 
-            $biggerNode = $this->getNextBiggerNode($biggerNode);
+            $current = $this->getNextBiggerNode($current);
         }
     }
 
@@ -230,33 +230,36 @@ final class TreeMap implements Map, IteratorAggregate
     }
 
     #[Pure]
-    private function getNextBiggerNode(TreeMapEntry $leftMostNode): ?TreeMapEntry
+    private function getNextBiggerNode(TreeMapEntry $current): ?TreeMapEntry
     {
-        $right = $leftMostNode->getRight();
+        // if the node has a right node, that one is the next bigger
+        $right = $current->getRight();
 
         if (!is_null($right)) {
-            return $right;
+            return $this->getLeftMostNode($right);
         }
 
-        $parent = $leftMostNode->getParent();
+        // otherwise we need to go up the tree
+        $parent = $current->getParent();
 
         if (is_null($parent)) {
             return null;
         }
 
-        if ($parent->getLeft() === $leftMostNode) {
-            return $parent;
-        }
-
-        while ($parent?->getRight() === $leftMostNode) {
-            $leftMostNode = $parent;
+        // when we are "coming from the left" (eg. the current node is the left node of its parent)
+        // the parent is the next bigger
+        // find the next parent where we are "coming from the left"
+        while ($parent?->getRight() === $current) {
+            $current = $parent;
             $parent = $parent->getParent();
         }
 
+        // if there ist no such parent, we've had the biggest element of the tree, which is the rightmost
         if (is_null($parent)) {
             return null;
         }
 
-        return $this->getLeftMostNode($parent);
+        // if we found a parent were we "came from the left", that is the next bigger node
+        return $parent;
     }
 }

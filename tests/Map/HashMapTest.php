@@ -361,4 +361,16 @@ final class HashMapTest extends TestCase implements AccumulationTestContract, Ma
 
         self::assertNull($removeResult);
     }
+
+    /** @test */
+    public function it_should_be_countable(): void
+    {
+        // TODO: Implement it_should_be_countable() method.
+    }
+
+    /** @test */
+    public function it_should_allow_getting_values_as_series(): void
+    {
+        // TODO: Implement it_should_allow_getting_values_as_series() method.
+    }
 }

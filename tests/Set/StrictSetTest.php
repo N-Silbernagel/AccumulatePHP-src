@@ -10,7 +10,7 @@ use AccumulatePHP\Set\ReadonlySet;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 
-final class MutableStrictSetTest extends TestCase implements AccumulationTestContract, SetTestContract
+final class StrictSetTest extends TestCase implements AccumulationTestContract, SetTestContract
 {
     /** @test */
     public function it_should_allow_creating_empty_instance_via_static_factory(): void
@@ -180,5 +180,11 @@ final class MutableStrictSetTest extends TestCase implements AccumulationTestCon
         $set->add(3);
 
         self::assertSame(3, $set->count());
+    }
+
+    /** @test */
+    public function it_should_be_countable(): void
+    {
+        // TODO: Implement it_should_be_countable() method.
     }
 }

@@ -230,4 +230,10 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
 
         self::assertNull($index);
     }
+
+    /** @test */
+    public function it_should_be_countable(): void
+    {
+        // TODO: Implement it_should_be_countable() method.
+    }
 }

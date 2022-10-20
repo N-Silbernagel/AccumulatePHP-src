@@ -127,4 +127,10 @@ final class MutableHashSetTest extends TestCase implements AccumulationTestContr
         self::assertTrue($remove);
         self::assertTrue($set->isEmpty());
     }
+
+    /** @test */
+    public function it_should_be_countable(): void
+    {
+        // TODO: Implement it_should_be_countable() method.
+    }
 }

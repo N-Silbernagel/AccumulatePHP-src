@@ -293,4 +293,10 @@ final class MutableArraySeriesTest extends TestCase implements AccumulationTestC
 
         self::assertNull($index);
     }
+
+    /** @test */
+    public function it_should_be_countable(): void
+    {
+        // TODO: Implement it_should_be_countable() method.
+    }
 }
