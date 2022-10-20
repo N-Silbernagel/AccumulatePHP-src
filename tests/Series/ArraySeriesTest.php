@@ -4,37 +4,78 @@ declare(strict_types=1);
 
 namespace Tests\Series;
 
+use AccumulatePHP\Accumulation;
 use AccumulatePHP\Series\ReadonlyArraySeries;
+use AccumulatePHP\Series\ArraySeries;
 use AccumulatePHP\Series\Series;
 use AccumulatePHP\Series\ReadonlySeries;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 
-final class DefaultSeriesTest extends TestCase implements AccumulationTestContract, SeriesTestContract
+final class ArraySeriesTest extends TestCase implements AccumulationTestContract, SeriesTestContract
 {
     /** @test */
     public function it_should_allow_creating_empty_instance_via_static_factory(): void
     {
-        $series = ReadonlyArraySeries::new();
+        $series = ArraySeries::new();
 
-        self::assertTrue($series->isEmpty());
+        self::assertSame(0, $series->count());
+    }
+
+    /** @test */
+    public function it_should_allow_adding_items(): void
+    {
+        /** @var ArraySeries<int> $series */
+        $series = ArraySeries::new();
+
+        $series->add(1);
+
+        self::assertSame(1, $series->count());
+    }
+
+    /** @test */
+    public function it_should_allow_removing_items_by_index(): void
+    {
+        /** @var Series<int> $series */
+        $series = ArraySeries::new();
+
+        $series->add(10);
+
+        $series->remove(0);
+
+        self::assertSame(0, $series->count());
+    }
+
+    /** @test */
+    public function it_should_return_the_removed_item_when_removing_by_index(): void
+    {
+        /**
+         * @var ArraySeries<int> $series
+         */
+        $series = ArraySeries::new();
+
+        $series->add(13);
+
+        $returnValue = $series->remove(0);
+
+        self::assertSame(13, $returnValue);
     }
 
     /** @test */
     public function it_should_allow_getting_items_by_index(): void
     {
-        /** @var string[] $data */
-        $data = [
-            'test5',
-            'test2',
-            'test'
-        ];
+        /**
+         * @var ArraySeries<string> $series
+         */
+        $series = ArraySeries::new();
 
-        $series = ReadonlyArraySeries::fromArray($data);
+        $series->add('test5');
+        $series->add('test2');
+        $series->add('test');
 
-        $getValue = $series->get(2);
+        $getValue = $series->get(1);
 
-        self::assertSame('test', $getValue);
+        self::assertSame('test2', $getValue);
     }
 
     /** @test */
@@ -43,7 +84,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
         /** @var array<int> $intArray */
         $intArray = [1, 10, 5];
 
-        $fromArray = ReadonlyArraySeries::fromArray($intArray);
+        $fromArray = ArraySeries::fromArray($intArray);
 
         self::assertSame(3, $fromArray->count());
     }
@@ -54,7 +95,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
         /** @var array<int> $intArray */
         $intArray = [1, 44542, 2];
 
-        $fromArray = ReadonlyArraySeries::fromArray($intArray);
+        $fromArray = ArraySeries::fromArray($intArray);
 
         self::assertSame(44542, $fromArray->get(1));
         self::assertSame(1, $fromArray->get(0));
@@ -67,7 +108,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
         /**
          * @var ReadonlySeries<int> $series
          */
-        $series = ReadonlyArraySeries::fromArray([1, 2, 3]);
+        $series = ArraySeries::fromArray([1, 2, 3]);
 
         $mappedSeries = $series->map(function (int $item) {
             return $item * 2;
@@ -87,7 +128,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     {
         $inputArray = ['xy', 'z'];
 
-        $series = ReadonlyArraySeries::fromArray($inputArray);
+        $series = ArraySeries::fromArray($inputArray);
 
         self::assertEquals($inputArray, $series->toArray());
     }
@@ -95,7 +136,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     /** @test */
     public function it_should_have_varargs_generator_method(): void
     {
-        $mutableSeries = ReadonlyArraySeries::of('x', 'y', 'z');
+        $mutableSeries = ArraySeries::of('x', 'y', 'z');
 
         self::assertEquals([
             'x',
@@ -108,7 +149,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function it_is_filterable_through_callable(): void
     {
         /** @var ReadonlySeries<string> $series */
-        $series = ReadonlyArraySeries::of('1', '12.4', 'abc');
+        $series = ArraySeries::of('1', '12.4', 'abc');
 
         $filteredSeries = $series->filter(fn(string $item) => is_numeric($item));
 
@@ -126,7 +167,10 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
         /** @var array<int|string> $inputArray */
         $inputArray = ['123', 5, -13];
 
-        $accumulation = ReadonlyArraySeries::fromArray($inputArray);
+        /**
+         * @var Accumulation<int, int|string> $accumulation
+         */
+        $accumulation = ArraySeries::fromArray($inputArray);
         foreach ($accumulation as $item) {
             $traversedItems[] = $item;
         }
@@ -143,17 +187,36 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
         ];
 
         /** @var ReadonlySeries<int> $series */
-        $series = ReadonlyArraySeries::fromArray($input);
+        $series = ArraySeries::fromArray($input);
 
         self::assertSame(0, $series->get(0));
         self::assertSame(10, $series->get(1));
     }
 
     /** @test */
+    public function it_knows_if_it_is_empty(): void
+    {
+        /**
+         * @var Series<mixed>
+         */
+        $series = ArraySeries::of();
+
+        self::assertTrue($series->isEmpty());
+
+        $series->add(1);
+
+        self::assertFalse($series->isEmpty());
+
+        $series->remove(0);
+
+        self::assertTrue($series->isEmpty());
+    }
+
+    /** @test */
     public function it_should_know_if_it_contains_element(): void
     {
         /** @var ReadonlySeries<int> $series */
-        $series = ReadonlyArraySeries::of(1, 2, 3);
+        $series = ArraySeries::of(1, 2, 3);
 
         self::assertTrue($series->containsLoose(1));
         self::assertFalse($series->containsLoose(4));
@@ -163,7 +226,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function contains_loose_should_be_non_strict(): void
     {
         /** @var ReadonlySeries<int|string> $series */
-        $series = ReadonlyArraySeries::of(1, 2, 3);
+        $series = ArraySeries::of(1, 2, 3);
 
         self::assertTrue($series->containsLoose(2));
         self::assertTrue($series->containsLoose('2'));
@@ -173,7 +236,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function it_should_know_if_it_strictly_contains_element(): void
     {
         /** @var ReadonlySeries<int> $series */
-        $series = ReadonlyArraySeries::of(9, 55, 2);
+        $series = ArraySeries::of(9, 55, 2);
 
         self::assertTrue($series->contains(55));
         self::assertFalse($series->contains(100));
@@ -183,7 +246,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function contains_should_be_strict(): void
     {
         /** @var ReadonlySeries<int|string> $series */
-        $series = ReadonlyArraySeries::of(1, 2, 3);
+        $series = ArraySeries::of(1, 2, 3);
 
         self::assertTrue($series->contains(2));
         self::assertFalse($series->contains('2'));
@@ -193,7 +256,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function find_should_return_match_if_exists(): void
     {
         /** @var ReadonlySeries<string> $series */
-        $series = ReadonlyArraySeries::of('hello', 'world');
+        $series = ArraySeries::of('hello', 'world');
 
         $actual = $series->find(fn(string $element) => str_starts_with($element, 'w'));
         self::assertSame('world', $actual);
@@ -203,7 +266,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function find_should_return_null_if_no_match_exists(): void
     {
         /** @var ReadonlySeries<string> $series */
-        $series = ReadonlyArraySeries::of('hello', 'world');
+        $series = ArraySeries::of('hello', 'world');
 
         $actual = $series->find(fn(string $element) => str_starts_with($element, 'not'));
         self::assertNull($actual);
@@ -213,7 +276,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function find_index_should_return_index_of_first_match(): void
     {
         /** @var Series<int> $series */
-        $series = ReadonlyArraySeries::of(1, 2, 3, 4, 3);
+        $series = ArraySeries::of(1, 2, 3, 4, 3);
 
         $index = $series->findIndex(fn(int $item) => $item === 3);
 
@@ -224,7 +287,7 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     public function find_index_should_return_null_if_no_match_exists(): void
     {
         /** @var Series<int> $series */
-        $series = ReadonlyArraySeries::of(1, 2, 3, 4);
+        $series = ArraySeries::of(1, 2, 3, 4);
 
         $index = $series->findIndex(fn(int $item) => $item === 5);
 
@@ -234,6 +297,8 @@ final class DefaultSeriesTest extends TestCase implements AccumulationTestContra
     /** @test */
     public function it_should_be_countable(): void
     {
-        // TODO: Implement it_should_be_countable() method.
+        $series = ArraySeries::of(4, 3, 2);
+
+        self::assertSame(3, $series->count());
     }
 }

@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 use Tests\Map\UnequalHashable;
 
-final class MutableHashSetTest extends TestCase implements AccumulationTestContract, SetTestContract
+final class HashSetTest extends TestCase implements AccumulationTestContract, SetTestContract
 {
     /** @test */
     public function it_should_be_traversable(): void
@@ -131,6 +131,8 @@ final class MutableHashSetTest extends TestCase implements AccumulationTestContr
     /** @test */
     public function it_should_be_countable(): void
     {
-        // TODO: Implement it_should_be_countable() method.
+        $set = HashSet::of('some', 'things');
+
+        self::assertSame(2, $set->count());
     }
 }

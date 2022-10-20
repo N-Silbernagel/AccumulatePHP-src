@@ -365,7 +365,13 @@ final class HashMapTest extends TestCase implements AccumulationTestContract, Ma
     /** @test */
     public function it_should_be_countable(): void
     {
-        // TODO: Implement it_should_be_countable() method.
+        $hashMap = HashMap::of(Entry::of(5, 10));
+
+        self::assertSame(1, $hashMap->count());
+
+        $hashMap->put(3, 6);
+
+        self::assertSame(2, $hashMap->count());
     }
 
     /** @test */

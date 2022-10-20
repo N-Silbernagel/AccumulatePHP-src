@@ -185,6 +185,8 @@ final class StrictSetTest extends TestCase implements AccumulationTestContract, 
     /** @test */
     public function it_should_be_countable(): void
     {
-        // TODO: Implement it_should_be_countable() method.
+        $set = StrictSet::of(1, 1, 1, 5);
+
+        self::assertSame(2, $set->count());
     }
 }
