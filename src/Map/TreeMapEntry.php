@@ -9,23 +9,20 @@ use JetBrains\PhpStorm\Pure;
 /**
  * @template TKey
  * @template TValue
- * @implements Entry<TKey, TValue>
  */
-final class TreeMapEntry implements Entry
+final class TreeMapEntry
 {
     /**
-     * @param TKey $key
-     * @param TValue $value
+     * @param Entry<TKey, TValue> $entry
+     * @param TreeMapEntry<TKey, TValue>|null $parent
      * @param TreeMapEntry<TKey, TValue>|null $left
      * @param TreeMapEntry<TKey, TValue>|null $right
-     * @param TreeMapEntry<TKey, TValue>|null $parent
      */
     private function __construct(
-        private readonly mixed $key,
-        private mixed $value,
-        private ?self $left = null,
-        private ?self $right = null,
-        private ?self $parent = null,
+        private readonly Entry $entry,
+        private readonly ?self $parent = null,
+        private ?self          $left = null,
+        private ?self          $right = null,
     )
     {
     }
@@ -40,22 +37,29 @@ final class TreeMapEntry implements Entry
     ): self
     {
         return new self(
-            $key,
-            $value,
+            Entry::of($key, $value),
+            $parent,
             $left,
-            $right,
-            $parent
+            $right
         );
     }
 
+    /**
+     * @return TKey
+     */
+    #[Pure]
     public function getKey(): mixed
     {
-        return $this->key;
+        return $this->entry->getKey();
     }
 
+    /**
+     * @return TValue
+     */
+    #[Pure]
     public function getValue(): mixed
     {
-        return $this->value;
+        return $this->entry->getValue();
     }
 
     /**
@@ -82,17 +86,17 @@ final class TreeMapEntry implements Entry
         return $this->left;
     }
 
-    public function setValue(mixed $value)
+    public function setValue(mixed $value): void
     {
         $this->value = $value;
     }
 
-    public function setLeft(TreeMapEntry $entry)
+    public function setLeft(TreeMapEntry $entry): void
     {
         $this->left = $entry;
     }
 
-    public function setRight(TreeMapEntry $entry)
+    public function setRight(TreeMapEntry $entry): void
     {
         $this->right = $entry;
     }
@@ -102,7 +106,7 @@ final class TreeMapEntry implements Entry
         $this->left = null;
     }
 
-    public function unsetRight()
+    public function unsetRight(): void
     {
         $this->right = null;
     }
