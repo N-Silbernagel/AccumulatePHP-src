@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace AccumulatePHP\Map;
 
 use AccumulatePHP\Accumulation;
+use AccumulatePHP\Series\ArraySeries;
+use AccumulatePHP\Series\Series;
 use IteratorAggregate;
 use JetBrains\PhpStorm\Pure;
 use Traversable;
@@ -18,6 +20,7 @@ use Traversable;
 final class TreeMap implements Map, IteratorAggregate
 {
     private ?TreeMapEntry $root = null;
+    private int $size = 0;
 
     private function __construct()
     {
@@ -73,6 +76,7 @@ final class TreeMap implements Map, IteratorAggregate
     {
         if (is_null($this->root)) {
             $this->root = TreeMapEntry::of($key, $value);
+            $this->size++;
             return null;
         }
 
@@ -80,7 +84,7 @@ final class TreeMap implements Map, IteratorAggregate
 
         do {
             $parent = $current;
-            $comparisonResult = $key <=> $current->getKey();
+            $comparisonResult = $this->compare($current->getKey(), $key);
             if ($comparisonResult === -1) {
                 $current = $current->getLeft();
             } elseif ($comparisonResult === 1) {
@@ -99,6 +103,8 @@ final class TreeMap implements Map, IteratorAggregate
         } else {
             $parent->setRight($entry);
         }
+
+        $this->size++;
         return null;
     }
 
@@ -112,14 +118,24 @@ final class TreeMap implements Map, IteratorAggregate
         $fromLeft = false;
 
         do {
-            $comparisonResult = $key <=> $current->getKey();
+            $comparisonResult = $this->compare($current->getKey(), $key);
 
             if ($comparisonResult === 0) {
+                if (is_null($current->getParent())) {
+                    $newRootNode = $current->getLeft() ?? $current->getRight();
+                    $this->root = $newRootNode;
+
+                    $this->size--;
+                    return $current->getValue();
+                }
+
                 if ($fromLeft) {
                     $current->getParent()->unsetLeft();
                 } else {
                     $current->getParent()->unsetRight();
                 }
+
+                $this->size--;
                 return $current->getValue();
             }
 
@@ -135,7 +151,6 @@ final class TreeMap implements Map, IteratorAggregate
         return null;
     }
 
-    #[Pure]
     public function get(mixed $key): mixed
     {
         if (is_null($this->root)) {
@@ -145,7 +160,7 @@ final class TreeMap implements Map, IteratorAggregate
         $current = $this->root;
 
         do {
-            $comparisonResult = $key <=> $current->getKey();
+            $comparisonResult = $this->compare($current->getKey(), $key);
 
             if ($comparisonResult === 0) {
                 return $current->getValue();
@@ -169,12 +184,18 @@ final class TreeMap implements Map, IteratorAggregate
 
     public function count(): int
     {
-        return 0;
+        return $this->size;
     }
 
-    public function values(): Accumulation
+    public function values(): Series
     {
-        // TODO: Implement values() method.
+        $series = ArraySeries::new();
+
+        foreach ($this as $entry) {
+            $series->add($entry->getValue());
+        }
+
+        return $series;
     }
 
     public static function fromAssoc(array $assocArray): self
@@ -262,5 +283,13 @@ final class TreeMap implements Map, IteratorAggregate
 
         // if we found a parent were we "came from the left", that is the next bigger node
         return $parent;
+    }
+
+    private function compare(mixed $target, mixed $comparison): int
+    {
+        if (is_scalar($target) !== is_scalar($comparison)) {
+            throw new IncomparableKeysException($target, $comparison);
+        }
+        return $comparison <=> $target;
     }
 }

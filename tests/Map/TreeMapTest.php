@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Map;
 
 use AccumulatePHP\Map\Entry;
+use AccumulatePHP\Map\IncomparableKeysException;
 use AccumulatePHP\Map\TreeMap;
 use AccumulatePHP\Map\Map;
 use PHPUnit\Framework\TestCase;
@@ -25,15 +26,43 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
     }
 
     /** @test */
+    public function it_should_throw_when_object_and_string_keys_are_used(): void
+    {
+        $treeMap = TreeMap::new();
+
+        $key = new EqualHashable('hi');
+        $treeMap->put($key, 1);
+
+        $this->expectException(IncomparableKeysException::class);
+
+        $treeMap->put('hello there', 2);
+    }
+
+    /** @test */
     public function it_should_be_convertable_to_assoc_array(): void
     {
-        // TODO: Implement it_should_be_convertable_to_assoc_array() method.
+        $treeMap = TreeMap::new();
+
+        $treeMap->put('hello there', 2);
+        $treeMap->put(1, 3);
+
+        $expected = [
+            'hello there' => 2,
+            1 => 3
+        ];
+
+        self::assertEquals($expected, $treeMap->toAssoc());
     }
 
     /** @test */
     public function it_should_ignore_non_scalar_keys_when_converting_to_assoc_array(): void
     {
-        // TODO: Implement it_should_ignore_non_scalar_keys_when_converting_to_assoc_array() method.
+        $key = (object) [];
+        $treeMap = TreeMap::new();
+
+        $treeMap->put($key, true);
+
+        self::assertEquals([], $treeMap->toAssoc());
     }
 
     /** @test */
@@ -142,12 +171,55 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
     /** @test */
     public function it_should_be_countable(): void
     {
-        // TODO: Implement it_should_be_countable() method.
+        $treeMap = TreeMap::new();
+
+        self::assertSame(0, $treeMap->count());
+
+        $treeMap->put(1, 1);
+
+        self::assertSame(1, $treeMap->count());
+
+        $treeMap->put(1, 2);
+
+        self::assertSame(1, $treeMap->count());
+
+        $treeMap->remove(1);
+
+        self::assertSame(0, $treeMap->count());
     }
 
     /** @test */
     public function it_should_allow_getting_values_as_series(): void
     {
-        // TODO: Implement it_should_allow_getting_values_as_series() method.
+        $treeMap = TreeMap::fromAssoc([
+            'test' => 'me',
+            'right' => 'now',
+        ]);
+
+        $values = $treeMap->values();
+
+        self::assertSame('now', $values->get(0));
+        self::assertSame('me', $values->get(1));
+    }
+
+    /** @test */
+    public function it_should_allow_replacing_the_root_node(): void
+    {
+        $treeMap = TreeMap::of(Entry::of(1, false));
+
+        $put = $treeMap->put(1, true);
+
+        self::assertFalse($put);
+        self::assertTrue($treeMap->get(1));
+    }
+
+    /** @test */
+    public function it_should_allow_removing_the_root_node(): void
+    {
+        $treeMap = TreeMap::of(Entry::of(1, false), Entry::of(2, true));
+
+        $treeMap->remove(1);
+
+        self::assertSame(1, $treeMap->count());
     }
 }

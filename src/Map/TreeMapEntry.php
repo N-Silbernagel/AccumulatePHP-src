@@ -96,7 +96,7 @@ final class TreeMapEntry
 
     public function setValue(mixed $value): void
     {
-        $this->value = $value;
+        $this->entry->setValue($value);
     }
 
     public function setLeft(TreeMapEntry $entry): void
