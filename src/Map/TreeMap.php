@@ -188,6 +188,7 @@ final class TreeMap implements Map, IteratorAggregate
         return $new;
     }
 
+    #[Pure]
     public function toAssoc(): array
     {
         $assoc = [];
@@ -210,7 +211,7 @@ final class TreeMap implements Map, IteratorAggregate
         $current = $this->getLeftMostNode($this->root);
 
         while (!is_null($current)) {
-            yield $current;
+            yield $current->getEntry();
 
             $current = $this->getNextBiggerNode($current);
         }

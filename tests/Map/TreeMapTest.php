@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Map;
 
+use AccumulatePHP\Map\Entry;
 use AccumulatePHP\Map\TreeMap;
 use AccumulatePHP\Map\Map;
-use AccumulatePHP\Map\TreeMapEntry;
 use PHPUnit\Framework\TestCase;
 use Tests\AccumulationTestContract;
 
@@ -72,13 +72,11 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
             $collected[] = $entry;
         }
 
-        $entryTwo = TreeMapEntry::of(2, true);
-        $entryOne = TreeMapEntry::of(1, true, parent: $entryTwo);
-        $entryThree = TreeMapEntry::of(3, true, parent: $entryTwo);
-        $entryFour = TreeMapEntry::of(4, true, parent: $entryThree);
-        $entryTwo->setLeft($entryOne);
-        $entryTwo->setRight($entryThree);
-        $entryThree->setRight($entryFour);
+        $entryTwo = Entry::of(2, true);
+        $entryOne = Entry::of(1, true);
+        $entryThree = Entry::of(3, true);
+        $entryFour = Entry::of(4, true);
+
         $expected = [
             $entryOne,
             $entryTwo,
@@ -91,8 +89,8 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
     /** @test */
     public function it_should_be_instantiatable_from_array(): void
     {
-        $treeMapEntryOne = TreeMapEntry::of('hi', 8);
-        $treeMapEntryTwo = TreeMapEntry::of('world', 16);
+        $treeMapEntryOne = Entry::of('hi', 8);
+        $treeMapEntryTwo = Entry::of('world', 16);
 
         $map = TreeMap::fromArray([$treeMapEntryOne, $treeMapEntryTwo]);
 
@@ -103,8 +101,8 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
     /** @test */
     public function it_should_have_varargs_generator_method(): void
     {
-        $treeMapEntryOne = TreeMapEntry::of('hi', 8);
-        $treeMapEntryTwo = TreeMapEntry::of('world', 9);
+        $treeMapEntryOne = Entry::of('hi', 8);
+        $treeMapEntryTwo = Entry::of('world', 9);
 
         $map = TreeMap::of($treeMapEntryOne, $treeMapEntryTwo);
 
@@ -120,9 +118,8 @@ final class TreeMapTest extends TestCase implements MapTestContract, Accumulatio
         $treeMap->put('test', 'me');
         $treeMap->put('real', 'good');
 
-        $entryTwo = TreeMapEntry::of('test', 'me');
-        $entryOne = TreeMapEntry::of('real', 'good', parent: $entryTwo);
-        $entryTwo->setLeft($entryOne);
+        $entryTwo = Entry::of('test', 'me');
+        $entryOne = Entry::of('real', 'good');
 
         $expected = [
             $entryOne,

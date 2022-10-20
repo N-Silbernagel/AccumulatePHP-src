@@ -86,6 +86,14 @@ final class TreeMapEntry
         return $this->left;
     }
 
+    /**
+     * @return Entry<TKey, TValue>
+     */
+    public function getEntry(): Entry
+    {
+        return $this->entry;
+    }
+
     public function setValue(mixed $value): void
     {
         $this->value = $value;
