@@ -377,6 +377,14 @@ final class HashMapTest extends TestCase implements AccumulationTestContract, Ma
     /** @test */
     public function it_should_allow_getting_values_as_series(): void
     {
-        // TODO: Implement it_should_allow_getting_values_as_series() method.
+        $hashMap = HashMap::fromAssoc([
+            'some' => 'data',
+            'in' => 'here'
+        ]);
+
+        $values = $hashMap->values();
+
+        self::assertTrue($values->contains('data'));
+        self::assertTrue($values->contains('here'));
     }
 }
