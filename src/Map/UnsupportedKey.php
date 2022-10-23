@@ -6,6 +6,6 @@ namespace AccumulatePHP\Map;
 
 use RuntimeException;
 
-final class UnsupportedKeyException extends RuntimeException
+final class UnsupportedKey extends RuntimeException
 {
 }
