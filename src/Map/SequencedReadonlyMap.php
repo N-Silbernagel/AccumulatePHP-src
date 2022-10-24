@@ -14,6 +14,6 @@ use AccumulatePHP\Series\ReadonlySeries;
  * @extends ReadonlyMap<TKey, TValue>
  * @extends SequencedAccumulation<int, Entry<TKey, TValue>>
  */
-interface ReadonlySequencedMap extends ReadonlyMap, SequencedAccumulation
+interface SequencedReadonlyMap extends ReadonlyMap, SequencedAccumulation
 {
 }
