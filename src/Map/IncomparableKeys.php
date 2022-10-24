@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\Pure;
 use RuntimeException;
 use Throwable;
 
-final class IncomparableKeysException extends RuntimeException
+final class IncomparableKeys extends RuntimeException
 {
     #[Pure]
     public function __construct(mixed $first, mixed $second, int $code = 0, ?Throwable $previous = null)
