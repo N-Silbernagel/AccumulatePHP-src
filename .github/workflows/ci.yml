@@ -132,6 +132,9 @@ jobs:
           path: remote-repository
           token: ${{ secrets.ACCESS_TOKEN }}
 
+      - name: "Clear remote repository files"
+        run: rm -r remote-repository/*
+
       - name: "Copy build files to remote repository"
         run: cp -a build-artifact/. remote-repository
 
