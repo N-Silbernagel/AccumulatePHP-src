@@ -15,6 +15,7 @@ if (!function_exists('AccumulatePHP\Series\mutableSetOf')) {
      */
     function mutableSetOf(...$items): MutableSet
     {
+        /** @var HashSet<T> */
         return HashSet::fromArray($items);
     }
 }

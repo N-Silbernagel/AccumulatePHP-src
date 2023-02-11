@@ -13,10 +13,11 @@ if (!function_exists('AccumulatePHP\Series\mutableMapOf')) {
      * @template TKey
      * @template TValue
      * @param Entry<TKey, TValue> ...$items
-     * @return MutableMap<Entry<TKey, TValue>>
+     * @return MutableMap<TKey, TValue>
      */
     function mutableMapOf(...$items): MutableMap
     {
+        /** @var HashMap<TKey, TValue> */
         return HashMap::fromArray($items);
     }
 }
