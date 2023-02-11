@@ -151,6 +151,7 @@ jobs:
           git config user.name "N-Silbernagel"
 
       - name: "Stage and Commit Changes"
+        id: "stage_commit"
         working-directory: remote-repository
         if: "github.ref == 'refs/heads/master'"
         continue-on-error: true
@@ -160,7 +161,7 @@ jobs:
 
       - name: "Push to remote - master"
         working-directory: remote-repository
-        if: "github.ref == 'refs/heads/master' && success()"
+        if: "github.ref == 'refs/heads/master' && steps.stage_commit.outcome == 'success'"
         run: |
           git push --quiet origin master
 
