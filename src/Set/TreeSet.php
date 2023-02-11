@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace AccumulatePHP\Set;
 
-use AccumulatePHP\Map\HashMap;
+use AccumulatePHP\Map\TreeMap;
 use IteratorAggregate;
 use JetBrains\PhpStorm\Pure;
 use Traversable;
@@ -14,12 +14,12 @@ use Traversable;
  * @implements MutableSet<T>
  * @implements IteratorAggregate<int, T>
  */
-final readonly class HashSet implements MutableSet, IteratorAggregate
+final readonly class TreeSet implements MutableSet, IteratorAggregate
 {
-    /** @param HashMap<T, true> $hashMap */
+    /** @param TreeMap<T, true> $treeMap */
     private function __construct(
-        /** @var HashMap<T, true> $hashMap */
-        private HashMap $hashMap
+        /** @var TreeMap<T, true> $treeMap */
+        private TreeMap $treeMap
     )
     {
     }
@@ -30,9 +30,9 @@ final readonly class HashSet implements MutableSet, IteratorAggregate
     #[Pure]
     public static function new(): self
     {
-        /** @var HashMap<T, true> $hashMap */
-        $hashMap = HashMap::new();
-        return new self($hashMap);
+        /** @var TreeMap<T, true> $treeMap */
+        $treeMap = TreeMap::new();
+        return new self($treeMap);
     }
 
     /**
@@ -47,37 +47,37 @@ final readonly class HashSet implements MutableSet, IteratorAggregate
     #[Pure]
     public function isEmpty(): bool
     {
-        return $this->hashMap->isEmpty();
+        return $this->treeMap->isEmpty();
     }
 
     #[Pure]
     public function count(): int
     {
-        return $this->hashMap->count();
+        return $this->treeMap->count();
     }
 
     public function add(mixed $element): bool
     {
-        $putResult = $this->hashMap->put($element, true);
+        $putResult = $this->treeMap->put($element, true);
 
         return $putResult === null;
     }
 
     public function remove(mixed $element): bool
     {
-        return $this->hashMap->remove($element) !== null;
+        return $this->treeMap->remove($element) !== null;
     }
 
     public function getIterator(): Traversable
     {
-        foreach ($this->hashMap as $item) {
+        foreach ($this->treeMap as $item) {
             yield $item->getKey();
         }
     }
 
     public function contains(mixed $element): bool
     {
-        return $this->hashMap->get($element) !== null;
+        return $this->treeMap->get($element) !== null;
     }
 
     /**
