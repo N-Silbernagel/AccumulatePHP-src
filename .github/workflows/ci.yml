@@ -150,17 +150,18 @@ jobs:
           git config user.email "6422477+N-Silbernagel@users.noreply.github.com"
           git config user.name "N-Silbernagel"
 
-      - name: "Stage Changes"
+      - name: "Stage and Commit Changes"
         working-directory: remote-repository
         if: "github.ref == 'refs/heads/master'"
         continue-on-error: true
-        run: git add --all
+        run: |
+          git add --all
+          git commit -m "Updated AccumulatePHP to commit ${{ github.event.after }}" -m "${{ steps.git-log.outputs.log }}"
 
-      - name: "Commit to remote - master"
+      - name: "Push to remote - master"
         working-directory: remote-repository
         if: "github.ref == 'refs/heads/master' && success()"
         run: |
-          git commit -m "Updated AccumulatePHP to commit ${{ github.event.after }}" -m "${{ steps.git-log.outputs.log }}"
           git push --quiet origin master
 
       - name: "Commit to remote - tag"
